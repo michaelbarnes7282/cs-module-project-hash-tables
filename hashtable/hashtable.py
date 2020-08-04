@@ -66,15 +66,19 @@ class LinkedList:
         if node is None:
             # Make a new node
             self.insert_at_head(HashTableEntry(key, value))
+            return 1
 
         else:
             # Overwrite old value
             node.value = value
+            return 0
+
 
 class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -98,7 +102,6 @@ class HashTable:
         self.strings = [None] * self.capacity
         self.stored = 0
 
-
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
@@ -112,7 +115,6 @@ class HashTable:
         # Your code here
         return len(self.strings)
 
-
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -122,7 +124,6 @@ class HashTable:
         # Your code here
         return self.stored / self.capacity
 
-
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
@@ -131,7 +132,6 @@ class HashTable:
         """
 
         # Your code here
-
 
     def djb2(self, key):
         """
@@ -145,14 +145,12 @@ class HashTable:
 
         return hashNum & 0xFFFFFFFF
 
-
-
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -164,18 +162,16 @@ class HashTable:
         Implement this.
         """
         lst = self.strings[self.hash_index(key)]
-        self.stored += 1
         if lst == None:
             lst = LinkedList()
-            lst.insert_or_overwrite_value(key, value)
+            self.stored += lst.insert_or_overwrite_value(key, value)
             self.strings[self.hash_index(key)] = lst
-            return
-
         else:
-            lst.insert_or_overwrite_value(key, value)
-            return
-
-
+            self.stored += lst.insert_or_overwrite_value(key, value)
+        load_factor = self.get_load_factor()
+        if load_factor > 0.7:
+            print('\nincreasing size!\n')
+            self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -186,12 +182,18 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
+        if self.strings[index] == None:
+            print("key not valid")
         if self.strings[index]:
             self.stored -= 1
             self.strings[index].delete(key)
-        else:
-            print("key not valid")
-
+        load_factor = self.get_load_factor()
+        # if load_factor < 0.2:
+        #     print("\ndecreasing!\n")
+        #     if (self.capacity // 2) < 8:
+        #         self.resize(self.capacity // 2)
+        #     else:
+        #         self.resize(8)
 
     def get(self, key):
         """
@@ -225,10 +227,8 @@ class HashTable:
                     newHashTable.put(cur.key, cur.value)
                     cur = cur.next
 
-
         self.capacity = new_capacity
         self.strings = newHashTable.strings
-
 
 
 if __name__ == "__main__":
