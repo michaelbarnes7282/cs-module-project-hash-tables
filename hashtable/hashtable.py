@@ -1,3 +1,76 @@
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def __str__(self):
+        """Print entire linked list."""
+
+        if self.head is None:
+            return "[Empty List]"
+
+        cur = self.head
+        s = ""
+
+        while cur != None:
+            s += f'({cur.value})'
+
+            if cur.next is not None:
+                s += '-->'
+
+            cur = cur.next
+
+        return s
+
+    def find(self, key):
+        cur = self.head
+
+        while cur is not None:
+            if cur.key == key:
+                return cur
+
+            cur = cur.next
+
+        return None
+
+    def delete(self, key):
+        cur = self.head
+
+        # Special case of deleting head
+
+        if cur.key == key:
+            self.head = cur.next
+            return cur
+
+        # General case of deleting internal node
+
+        prev = cur
+        cur = cur.next
+
+        while cur is not None:
+            if cur.key == key:  # Found it!
+                prev.next = cur.next   # Cut it out
+                return cur  # Return deleted node
+            else:
+                prev = cur
+                cur = cur.next
+
+        return None  # If we got here, nothing found
+
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+
+    def insert_or_overwrite_value(self, key, value):
+        node = self.find(key)
+
+        if node is None:
+            # Make a new node
+            self.insert_at_head(HashTableEntry(key, value))
+
+        else:
+            # Overwrite old value
+            node.value = value
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -23,6 +96,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.strings = [None] * self.capacity
+        self.stored = 0
 
 
     def get_num_slots(self):
@@ -46,7 +120,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.strings) / self.capacity
+        return self.stored / self.capacity
 
 
     def fnv1(self, key):
@@ -89,8 +163,18 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
-        self.strings[index] = value
+        lst = self.strings[self.hash_index(key)]
+        self.stored += 1
+        if lst == None:
+            lst = LinkedList()
+            lst.insert_or_overwrite_value(key, value)
+            self.strings[self.hash_index(key)] = lst
+            return
+
+        else:
+            lst.insert_or_overwrite_value(key, value)
+            return
+
 
 
     def delete(self, key):
@@ -103,7 +187,8 @@ class HashTable:
         """
         index = self.hash_index(key)
         if self.strings[index]:
-            self.strings[index] = None
+            self.stored -= 1
+            self.strings[index].delete(key)
         else:
             print("key not valid")
 
@@ -117,8 +202,11 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        return self.strings[index]
-
+        found = self.strings[index].find(key)
+        if found:
+            return found.value
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
@@ -127,7 +215,19 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        newHashTable = HashTable(new_capacity)
+        for listy in self.strings:
+            if listy == None:
+                pass
+            else:
+                cur = listy.head
+                while cur:
+                    newHashTable.put(cur.key, cur.value)
+                    cur = cur.next
+
+
+        self.capacity = new_capacity
+        self.strings = newHashTable.strings
 
 
 
