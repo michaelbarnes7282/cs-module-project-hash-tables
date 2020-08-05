@@ -1,5 +1,18 @@
+from string import punctuation
 def word_count(s):
-    # Your code here
+    d = {}
+    p = ["\"", ':', ";", ",", ".", '-', "+", '=', '/', '\\', "|", "[", "]", '{', '}', '(', ')', '*', '^', '&', '\'\'']
+    words = s.split()
+
+    for w in words:
+        w = w.lower()
+        w = ''.join(c for c in w if c not in p)
+        if w in d:
+            d[w] += 1
+        else:
+            if w:
+                d[w] = 1
+    return d
 
 
 

@@ -33,10 +33,10 @@ def slowfun(x, y):
         v = cache[v]
     else:
         n = math.factorial(v)
+        n //= (x + y)
+        n %= 982451653
         cache[v] = n
         v = n
-    v //= (x + y)
-    v %= 982451653
 
     return v
 

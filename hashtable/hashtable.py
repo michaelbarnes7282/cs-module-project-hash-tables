@@ -187,7 +187,7 @@ class HashTable:
         if self.strings[index]:
             self.stored -= 1
             self.strings[index].delete(key)
-        load_factor = self.get_load_factor()
+        # load_factor = self.get_load_factor()
         # if load_factor < 0.2:
         #     print("\ndecreasing!\n")
         #     if (self.capacity // 2) < 8:
@@ -219,9 +219,7 @@ class HashTable:
         """
         newHashTable = HashTable(new_capacity)
         for listy in self.strings:
-            if listy == None:
-                pass
-            else:
+            if listy:
                 cur = listy.head
                 while cur:
                     newHashTable.put(cur.key, cur.value)
