@@ -12,16 +12,6 @@ def slowfun_too_slow(x, y):
 
 cache = {}
 
-def fact(n):
-    if n in cache:
-        return cache[n]
-    elif n == 0:
-        return 1
-    else:
-        x = fact(n-1) * n
-        cache[n] = x
-        return x
-
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same

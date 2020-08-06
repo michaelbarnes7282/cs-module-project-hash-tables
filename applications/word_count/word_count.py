@@ -1,7 +1,7 @@
-from string import punctuation
+# from string import punctuation
 def word_count(s):
     d = {}
-    p = ["\"", ':', ";", ",", ".", '-', "+", '=', '/', '\\', "|", "[", "]", '{', '}', '(', ')', '*', '^', '&', '\'\'']
+    p = {"\"", ':', ";", ",", ".", '-', "+", '=', '/', '\\', "|", "[", "]", '{', '}', '(', ')', '*', '^', '&', '\'\''}
     words = s.split()
 
     for w in words:

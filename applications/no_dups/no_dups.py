@@ -1,6 +1,13 @@
 def no_dups(s):
-    # Your code here
-
+    uniqs = ''
+    setty = set()
+    for x in s.split(" "):
+        if not(x in uniqs):
+            if len(uniqs) > 0:
+                x = " " + x    
+            uniqs = uniqs + x
+             
+    return uniqs
 
 
 if __name__ == "__main__":
